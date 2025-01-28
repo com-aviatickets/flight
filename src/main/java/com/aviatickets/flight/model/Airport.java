@@ -29,12 +29,10 @@ public class Airport {
             allocationSize = 1
     )
     private Long id;
-    private String name;
-    private String country;
+
     private String city;
     private String iataCode;
     private String icaoCode;
-    private String timezone;
     private String description;
     private String site;
 
