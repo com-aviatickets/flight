@@ -12,12 +12,9 @@ import java.util.List;
 public class AirportSpecification {
 
     public static final String ID_FIELD = "id";
-    public static final String NAME_FIELD = "name";
-    public static final String COUNTRY_FIELD = "country";
     public static final String CITY_FIELD = "city";
     public static final String IATA_CODE_FIELD = "iataCode";
     public static final String ICAO_CODE_FIELD = "icaoCode";
-    public static final String TIMEZONE_FIELD = "timezone";
 
     public static Specification<Airport> byFilter(AirportFilter filter) {
         return (root, query, criteriaBuilder) -> {
@@ -25,14 +22,6 @@ public class AirportSpecification {
 
             if (ObjectUtils.isNotEmpty(filter.id())) {
                 predicates.add(root.get(ID_FIELD).in(filter.id()));
-            }
-
-            if (ObjectUtils.isNotEmpty(filter.name())) {
-                predicates.add(root.get(NAME_FIELD).in(filter.name()));
-            }
-
-            if (ObjectUtils.isNotEmpty(filter.country())) {
-                predicates.add(root.get(COUNTRY_FIELD).in(filter.country()));
             }
 
             if (ObjectUtils.isNotEmpty(filter.city())) {
@@ -45,10 +34,6 @@ public class AirportSpecification {
 
             if (ObjectUtils.isNotEmpty(filter.icaoCode())) {
                 predicates.add(root.get(ICAO_CODE_FIELD).in(filter.icaoCode()));
-            }
-
-            if (ObjectUtils.isNotEmpty(filter.timezone())) {
-                predicates.add(root.get(TIMEZONE_FIELD).in(filter.timezone()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
