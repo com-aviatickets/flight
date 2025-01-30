@@ -16,8 +16,10 @@ public class CityService {
 
     private final CityRepository repository;
 
+    private final int REQUIRED_CITY_NAME_LENGTH = 3;
+
     public ListResult<City> findCity(String name) {
-        if (name == null || name.length() < 3) {
+        if (name == null || name.length() < REQUIRED_CITY_NAME_LENGTH) {
             return listOk(new ArrayList<>());
         }
         return listOk(repository.findByName(name));
