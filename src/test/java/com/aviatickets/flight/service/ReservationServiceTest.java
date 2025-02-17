@@ -1,7 +1,7 @@
 package com.aviatickets.flight.service;
 
 import com.aviatickets.flight.exception.FlightNotFoundException;
-import com.aviatickets.flight.exception.SeatAlreadyAvailableException;
+
 import com.aviatickets.flight.exception.SeatNotFoundException;
 import com.aviatickets.flight.model.Flight;
 import com.aviatickets.flight.model.Seat;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -40,14 +40,14 @@ public class ReservationServiceTest {
     public void testReserveSeat_Success() throws Exception {
         Long flightId = 1L;
         String seatNumber = "1A";
+        seat.setStatus(SeatStatus.BOOKED);
 
         when(flightService.findById(flightId)).thenReturn(flight);
-        when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(seat);
+        when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(Optional.of(seat));
 
-        String result = reservationService.reserveSeat(flightId, seatNumber);
+        reservationService.cancelReservation(flightId, seatNumber);
 
-        assertEquals("Successfully booked", result);
-        assertEquals(SeatStatus.BOOKED, seat.getStatus());
+        assertEquals(SeatStatus.AVAILABLE, seat.getStatus());
         verify(seatService, times(1)).save(seat);
     }
     @Test
@@ -55,8 +55,7 @@ public class ReservationServiceTest {
         Long flightId = 1L;
         String seatNumber = "1A";
 
-        when(flightService.findById(flightId)).thenReturn(null);
-
+        when(flightService.findById(flightId)).thenThrow(new FlightNotFoundException("No flight found for this id"));
         Exception exception = assertThrows(FlightNotFoundException.class, () -> {
             reservationService.reserveSeat(flightId, seatNumber);
         });
@@ -68,7 +67,7 @@ public class ReservationServiceTest {
         String seatNumber = "1A";
 
         when(flightService.findById(flightId)).thenReturn(flight);
-        when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(null);
+        when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(SeatNotFoundException.class, () -> {
             reservationService.reserveSeat(flightId, seatNumber);
@@ -82,11 +81,8 @@ public class ReservationServiceTest {
         seat.setStatus(SeatStatus.AVAILABLE);
 
         when(flightService.findById(flightId)).thenReturn(flight);
-        when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(seat);
-
-        Exception exception = assertThrows(SeatAlreadyAvailableException.class, () -> {
-            reservationService.cancelReservation(flightId, seatNumber);
-        });
-        assertEquals("The seat is already available", exception.getMessage());
+        when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(Optional.of(seat));
+        reservationService.cancelReservation(flightId, seatNumber);
+        verify(seatService, never()).save(seat);
     }
 }

@@ -2,7 +2,6 @@ package com.aviatickets.flight.config;
 
 import com.aviatickets.flight.controller.response.ErrorDto;
 import com.aviatickets.flight.exception.FlightNotFoundException;
-import com.aviatickets.flight.exception.SeatAlreadyAvailableException;
 import com.aviatickets.flight.exception.SeatAlreadyBookedException;
 import com.aviatickets.flight.exception.SeatNotFoundException;
 import jakarta.validation.ValidationException;
@@ -59,11 +58,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(SeatAlreadyBookedException.class)
     public ResponseEntity<String> handleSeatAlreadyBooked(SeatAlreadyBookedException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(SeatAlreadyAvailableException.class)
-    public ResponseEntity<Void> handleSeatAlreadyAvailable(SeatAlreadyAvailableException ex) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     private ResponseEntity<?> buildErrorResponse(String message, HttpStatus status) {
