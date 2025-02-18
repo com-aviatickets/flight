@@ -3,10 +3,12 @@ package com.aviatickets.flight.controller.internal;
 import com.aviatickets.flight.controller.request.ReservationRequest;
 import com.aviatickets.flight.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import static com.aviatickets.flight.controller.ControllerConstants.INTERNAL;
+
+
 
 @RestController
 @RequestMapping(INTERNAL + "/reservation")
@@ -16,9 +18,9 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<String> reserveSeat (@RequestBody ReservationRequest request) {
-        String responseMessage = reservationService.reserveSeat(request.getFlightId(), request.getSeatNumber());
-        return ResponseEntity.ok(responseMessage);
+    public ResponseEntity<Void> reserveSeat(@RequestBody ReservationRequest request) {
+        reservationService.reserveSeat(request.getFlightId(), request.getSeatNumber());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping

@@ -1,7 +1,6 @@
 package com.aviatickets.flight.service;
 
 import com.aviatickets.flight.exception.FlightNotFoundException;
-
 import com.aviatickets.flight.exception.SeatNotFoundException;
 import com.aviatickets.flight.model.Flight;
 import com.aviatickets.flight.model.Seat;
@@ -40,14 +39,11 @@ public class ReservationServiceTest {
     public void testReserveSeat_Success() throws Exception {
         Long flightId = 1L;
         String seatNumber = "1A";
-        seat.setStatus(SeatStatus.BOOKED);
 
         when(flightService.findById(flightId)).thenReturn(flight);
         when(seatService.findByFlightAndSeatNumber(flight, seatNumber)).thenReturn(Optional.of(seat));
-
-        reservationService.cancelReservation(flightId, seatNumber);
-
-        assertEquals(SeatStatus.AVAILABLE, seat.getStatus());
+        reservationService.reserveSeat(flightId, seatNumber);
+        assertEquals(SeatStatus.BOOKED, seat.getStatus());
         verify(seatService, times(1)).save(seat);
     }
     @Test
