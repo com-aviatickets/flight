@@ -1,4 +1,4 @@
 alter table flight_airport
-    drop column name,
-    drop column country,
-    drop column timezone;
+    drop column if exists name,
+    drop column if exists country,
+    drop column if exists timezone;

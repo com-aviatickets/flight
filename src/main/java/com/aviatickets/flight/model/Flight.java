@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "flight_flight")
@@ -35,8 +36,8 @@ public class Flight {
     private ZonedDateTime departureTime;
     private ZonedDateTime arrivalTime;
     private BigDecimal price;
-    private Integer availableSeats;
     private Integer baggageAllowance;
-
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    private List<Seat> seats;
 
 }
