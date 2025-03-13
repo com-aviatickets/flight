@@ -17,7 +17,7 @@ import static com.aviatickets.flight.controller.ControllerConstants.INTERNAL;
 @RestController
 @RequestMapping(INTERNAL + "/flight")
 @RequiredArgsConstructor
-public class FlightController {
+public class InternalFlightController {
 
     private final FlightService flightService;
 
