@@ -8,7 +8,6 @@ import com.aviatickets.flight.model.Flight;
 import com.aviatickets.flight.model.Seat;
 import com.aviatickets.flight.repository.AirportRepository;
 import com.aviatickets.flight.repository.FlightRepository;
-import com.aviatickets.flight.repository.SeatRepository;
 import com.aviatickets.flight.util.http.HttpUtils;
 import com.aviatickets.flight.util.http.PageableResult;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 @Service
 @RequiredArgsConstructor
@@ -53,12 +52,8 @@ public class FlightService {
         if (createRequest.getDepartureAirportId().equals(createRequest.getArrivalAirportId())){
            throw new  IllegalArgumentException("Аэропорт прибытия и Аэропорт отправления похожи");
         }
-
-        //достать из базы по id
-        Airport departureAirport =  airportRepository.findById(createRequest.getDepartureAirportId())
-                .orElseThrow(() -> new NoSuchElementException("По id %d не найден аэропорт".formatted(createRequest.getDepartureAirportId())));
-        Airport arrivalAirport = airportRepository.findById(createRequest.getArrivalAirportId())
-                .orElseThrow(() -> new NoSuchElementException("По id %d не найден аэропорт".formatted(createRequest.getArrivalAirportId())));
+        Airport departureAirport = getAirportById(createRequest.getDepartureAirportId());
+        Airport arrivalAirport = getAirportById(createRequest.getArrivalAirportId());
 
         Flight flight = Flight.builder()
                 .flightNumber(createRequest.getFlightNumber())
@@ -77,6 +72,11 @@ public class FlightService {
 
         return flightRepository.save(flight);
 
+    }
+
+    private Airport getAirportById(Long airportId) {
+        return airportRepository.findById(airportId)
+                .orElseThrow(() -> new NoSuchElementException("По id %d не найден аэропорт".formatted(airportId)));
     }
 
     private void createSeats(Flight flight, List<String> seatCodes) {
@@ -124,7 +124,8 @@ public class FlightService {
         return flightRepository.save(newFlight);
     }
 
-    }
+
+}
 
 
 
