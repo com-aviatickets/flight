@@ -39,5 +39,6 @@ public class Flight {
     private Integer baggageAllowance;
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     private List<Seat> seats;
+    private Integer version;
 
 }
